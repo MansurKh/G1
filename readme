@@ -1,0 +1,50 @@
+Here is the instruction how to launch the project:
+
+Launching datastorages:
+java DataServerStart 8000 Storage/dataStorage1
+java DataServerStart 8500 Storage/dataStorage2
+java DataServerStart 9000 Storage/dataStorage3	
+
+....
+
+
+all the datastorage servers should be described in file "storages" as following:
+127.0.0.1:8000
+127.0.0.1:8500
+127.0.0.1:9000
+....
+
+
+Launching workers:
+java DataServerStart 5000 temp
+java DataServerStart 5500 temp
+java DataServerStart 6000 temp
+java DataServerStart 6500 temp
+....
+
+
+all the datastorage servers should be described in file "storages" as following:
+127.0.0.1:5000
+127.0.0.1:5500
+127.0.0.1:6000
+127.0.0.1:6500
+....
+
+
+Launching master:
+java MasterServerStart 7000 rootFolder
+
+
+Launching master:
+java ClientStart 127.0.0.1:7000 
+
+
+Commands:
+Commands are given in Commands enum:
+	dir (0,1 arguments) - view the directory
+	cp (2 arguments) - copy file
+	mkdir (2 arguments) - create a new directory
+	get (2 arguments) - download the file
+	rm (1 arguments) - remove
+	init (0 arguments) - reinitialize storage
+	mapreduce (1 argument) - apply mapreduce
