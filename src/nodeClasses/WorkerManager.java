@@ -1,3 +1,4 @@
+package nodeClasses;
 import java.util.ArrayList;
 import java.util.logging.Logger;
 import java.io.*;
@@ -5,19 +6,18 @@ import java.net.URL;
 import java.rmi.RemoteException;
 import java.rmi.registry.*;
 
-
-public class DataServerManager {
-    private static volatile DataServerManager instance;
+public class WorkerManager {
+    private static volatile WorkerManager instance;
 	static Logger logger = Logger.getLogger(String.valueOf(RMICore.class));
 
-    public ArrayList <DataServerInt> DataServers;
-    private DataServerManager() { }
+    public ArrayList <WorkerInt> Workers;
+    private WorkerManager() { }
 
-    public static DataServerManager getInstance() {
+    public static WorkerManager getInstance() {
         if (instance == null ) {
-            synchronized (DataServerManager.class) {
+            synchronized (WorkerManager.class) {
                 if (instance == null) {
-                    instance = new DataServerManager();
+                    instance = new WorkerManager();
                 }
             }
         }
@@ -25,7 +25,7 @@ public class DataServerManager {
     }
 
     public void setServers(String file){
-    	DataServers = new ArrayList <DataServerInt> ();
+    	Workers = new ArrayList <WorkerInt> ();
         try {
             BufferedReader buff = new BufferedReader(new FileReader(file));
             String line;
@@ -34,19 +34,20 @@ public class DataServerManager {
                 int port = address.getPort();
 
                 Registry registry = LocateRegistry.getRegistry(address.getHost(), port);
-                DataServerInt dataServer = (DataServerInt) registry.lookup("DataServer");
-                DataServers.add(dataServer);
+                WorkerInt Worker = (WorkerInt) registry.lookup("Worker");
+                Workers.add(Worker);
             }
-            logger.info("Connected to " + DataServers.size() + " dataservers!");
+            logger.info("Connected to " + Workers.size() + " workers!");
         }
         catch (Exception e){
-            logger.warning("Error while connecting to dataservers: " + e.getMessage());
+            logger.warning("Error while connecting to workers: " + e.getMessage());
         }
     }
 
+    
     public DataUnit getData(String id){
         try {
-            return DataServers.get(getServerNumber(id)).getDataUnit(id);
+            return Workers.get(getServerNumber(id)).reduce(id);
         } catch (RemoteException e) {
             e.printStackTrace();
         }
@@ -55,7 +56,7 @@ public class DataServerManager {
 
     public void putData(DataUnit dataUnit){
         try {
-        	DataServers.get(getServerNumber(dataUnit.getId())).addDataUnit(dataUnit);
+        	Workers.get(getServerNumber(dataUnit.getId())).map(dataUnit);
         } catch (RemoteException e) {
             e.printStackTrace();
         }
@@ -63,7 +64,7 @@ public class DataServerManager {
 
     public boolean deleteData(String id){
         try {
-            return DataServers.get(getServerNumber(id)).removeDataUnit(id);
+            return Workers.get(getServerNumber(id)).removeTemp(id);
         } catch (RemoteException e) {
             e.printStackTrace();
             return false;
@@ -71,6 +72,6 @@ public class DataServerManager {
     }
 
     private int getServerNumber(String id){
-        return Integer.decode("0x" + id.substring(id.length()-2)) % DataServers.size();
+        return Integer.decode("0x" + id.substring(id.length()-2)) % Workers.size();
     }
 }

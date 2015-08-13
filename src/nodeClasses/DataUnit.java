@@ -1,3 +1,4 @@
+package nodeClasses;
 import java.io.Serializable;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -5,14 +6,14 @@ import java.security.NoSuchAlgorithmException;
 public class DataUnit implements Serializable{
 
 	public int dataSize;
-    byte [] data;
+    byte [] _data;
 
     public DataUnit(byte[] data, int size) {
-        this.data = data;
+        this._data = data;
         dataSize = size;
         if (size < data.length){
             byte[] reducedData = java.util.Arrays.copyOf(data, size);
-            this.data=reducedData;
+            this._data = reducedData;
         }
     }
 
@@ -32,10 +33,14 @@ public class DataUnit implements Serializable{
     
     public String getId(){
         try {
-            return sha1(data);
+            return sha1(_data);
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
             return null;
         }
+    }
+    
+    public byte [] data(){
+        return _data;
     }
 }

@@ -1,5 +1,7 @@
 import java.rmi.RemoteException;
 
+import nodeClasses.Worker;
+
 public class WorkerStart {
 
 	public static void main(String[] args) {

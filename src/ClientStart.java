@@ -17,6 +17,12 @@ import java.util.logging.Formatter;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
+import nodeClasses.Commands;
+import nodeClasses.DataServerManager;
+import nodeClasses.DataStorageInt;
+import nodeClasses.DataUnit;
+import nodeClasses.MasterServer;
+
 
 public class ClientStart {
     public static DataStorageInt master;
@@ -210,7 +216,7 @@ public class ClientStart {
             for (int i=0; i < ids.size(); i++){
             	DataUnit data = DataServerManager.getInstance().getData(ids.get(i));
                 FileOutputStream output = new FileOutputStream(localPath, true);
-                output.write(data.data);
+                output.write(data.data());
                 output.close();
                 System.out.println(data.getId());
             }

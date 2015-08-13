@@ -1,4 +1,7 @@
 import java.rmi.RemoteException;
+
+import nodeClasses.MasterServer;
+
 import java.io.*;
 
 public class MasterServerStart {
