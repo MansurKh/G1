@@ -22,10 +22,12 @@ import nodeClasses.DataServerManager;
 import nodeClasses.DataStorageInt;
 import nodeClasses.DataUnit;
 import nodeClasses.MasterServer;
+import nodeClasses.WorkerInt;
 
 
 public class ClientStart {
     public static DataStorageInt master;
+    public static WorkerInt wMaster;
     private static String arg = "";
 	static Logger logger = Logger.getLogger(String.valueOf(ClientStart.class));
     private static FileHandler fHandler;
@@ -65,6 +67,20 @@ public class ClientStart {
             master = (DataStorageInt) registry.lookup("MasterServer");
 
             DataServerManager.getInstance().setServers("storages");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        
+        host = null;
+        wMaster = null;
+        try {
+            host = new URL("http://127.0.0.1:10000");
+            int Port = host.getPort() == -1 ? 7000 : host.getPort();
+
+            Registry wRegistry = LocateRegistry.getRegistry(host.getHost(), Port);
+            wMaster = (WorkerInt) wRegistry.lookup("MapReduceServer");
+
+            DataServerManager.getInstance().setServers("workers");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -140,19 +156,24 @@ public class ClientStart {
                         logger.info(cmd[1] + "was succesfully removed");
                         break;
 	
-                	case open:
-                		if(cmd.length < 2){
-                			logger.info("Not enough parameters!");
-                			break;
-                		}
-                		
-                		master.open(cmd[1]);
-                        logger.info(cmd[1] + "was was not opened");
-                        break;
-	
                 	case init:
                         master.initialize();
                     	logger.info("Storage reinitialised");
+                    	break;
+                    	
+                	case mapreduce:
+                		String fileToMR = Character.toString(cmd[1].charAt(0)) == "/" ? cmd[1] : "/" + cmd[1];
+                		String newfileToMR = Character.toString(cmd[2].charAt(0)) == "/" ? cmd[2] : "/" + cmd[2];
+                		if(cmd.length < 2){
+            			logger.info("Not enough parameters!");
+            			break;
+                        }
+                		if(wMaster.mapreduce(fileToMR, newfileToMR)){
+                			logger.info("Mapreduce for the file " + fileToMR + " has been completed successfully");
+                		}else{
+                			logger.info("Mapreduce for the file " + fileToMR + " has failed");
+                		}
+                			
                     	break;
                     	
                 	case help:

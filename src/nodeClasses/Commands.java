@@ -8,5 +8,6 @@ public enum Commands {
 	rm,
 	init,
 	open,
-	help
+	help,
+	mapreduce
 }

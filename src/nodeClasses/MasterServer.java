@@ -118,9 +118,9 @@ public class MasterServer extends RMICore implements DataStorageInt{
         folder.mkdir();
     }
 
-    public void setServers(String fileStorage, String fileWorkers ){
+
+    public void setServers(String fileStorage){
         DataServerManager.getInstance().setServers(fileStorage);
-        WorkerManager.getInstance().setServers(fileWorkers);
     }
 
     private static void deleteLocalFolder(File folder) {

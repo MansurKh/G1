@@ -1,16 +1,17 @@
 import java.rmi.RemoteException;
 
+import nodeClasses.MapReduceServer;
 import nodeClasses.MasterServer;
 
 import java.io.*;
 
-public class MasterServerStart {
+public class MapReduceServerStart {
     public static void main(String[] args) {
 
         int port = Integer.valueOf(args[0]);
         try {
-            MasterServer master = new MasterServer(port, "MasterServer", args[1]);
-            master.setServers("storages");
+            MapReduceServer master = new MapReduceServer(port, "MapReduceServer", args[1]);
+            master.setServers("workers");
             master.RMIStart();
 
             BufferedReader consoleInput = new BufferedReader(new InputStreamReader(System.in));
